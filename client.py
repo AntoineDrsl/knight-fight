@@ -21,11 +21,13 @@ def redrawWindow(win, player, player2):
 # Launch loop game
 def main():
     run = True
+    clock = pygame.time.Clock()
+    # Current player
     n = Network()
     startPos = read_pos(n.getPos())
-    p = Player(startPos[0], startPos[1], 20, (0, 255, 0))
-    p2 = Player(0, 0, 20, (255, 0, 0))
-    clock = pygame.time.Clock()
+    p = Player(startPos[0], startPos[1], (0, 255, 0), 'left')
+    # Opponent
+    p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), (255, 0, 0), 'right')
 
     while run:
         p2Pos = read_pos(n.send(make_pos((p.x, p.y))))
@@ -34,9 +36,17 @@ def main():
         p2.update()
 
         for event in pygame.event.get():
+            # Quit
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+
+            # Test
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    p.get_health(50)
+                if event.key == pygame.K_q:
+                    p.get_damage(50)
         
         p.move()
         redrawWindow(WIN, p, p2)
