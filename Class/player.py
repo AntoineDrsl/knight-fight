@@ -12,6 +12,11 @@ class Player():
         self.color = color
         self.vel = 5
         self.circle = (self.x, self.y)
+        # self.jumping = 0
+        # self.jump_up = 0
+        # self.jump_down = 5
+        # self.jump_nbr = 0
+        # self.a_jump = False
 
         # Health bar
         self.health_bar_length = int(CONFIG.get('HEALTH_BAR_WIDTH'))
@@ -37,10 +42,10 @@ class Player():
             self.x += self.vel
         if keys[pygame.K_LEFT] and self.x > 0:
             self.x -= self.vel
-        if keys[pygame.K_UP] and self.y > 0:
-            self.y -= self.vel
-        if keys[pygame.K_DOWN] and self.y < int(CONFIG.get('WINDOW_HEIGHT')):
-            self.y += self.vel
+        # if keys[pygame.K_UP] and self.y > 0:
+        #     self.y -= self.vel
+        # if keys[pygame.K_DOWN] and self.y < int(CONFIG.get('WINDOW_HEIGHT')):
+        #     self.y += self.vel
 
         self.update()
 
@@ -62,3 +67,19 @@ class Player():
     def basic_health(self, win):
         pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, self.health_bar_height))
         pygame.draw.rect(win, (255, 255, 255), (self.health_bar_x, self.health_bar_y, self.health_bar_length, self.health_bar_height), self.health_bar_border)
+
+    # def jump(self):
+    #     if self.a_jump :
+    #         if self.jump_up >= 10:
+    #             self.jump_down -= 1
+    #             self.jumping = self.jump_down
+    #         else : 
+    #             self.jump_up += 1
+    #             self.jumping = self.jump_up
+            
+    #         if self.jump_down < 0 :
+    #             self.jump_up = 0
+    #             self.jump_down = 5
+    #             self.a_jump = False
+            
+    #         self.y = self.y - (10* (self.jumping / 2))
