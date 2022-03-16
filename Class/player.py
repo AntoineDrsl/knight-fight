@@ -1,6 +1,7 @@
 from json import load
 import os
 from posixpath import basename
+from traceback import print_tb
 from unittest.mock import patch
 from dotenv import dotenv_values
 import pygame
@@ -14,10 +15,15 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         if side == 'right': 
             self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,13)]
-        else: self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,13)]
+            self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/current/attack', str(x) + '.png')) for x in range(1,13)]
+        else: 
+            self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,13)]
+            self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/opponent/attack', str(x) + '.png')) for x in range(1,13)]
         # SPRITE IMAGE
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
+        self.attacking = False
+        self.counter_attack = 0
         # SPRITE HITBOX        
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -26,7 +32,6 @@ class Player(pygame.sprite.Sprite):
         self.y = y
         self.direction = direction
         self.vel = 5
-        self.circle = (self.x, self.y)
 
         # Jump
         self.isJump = False
@@ -56,6 +61,11 @@ class Player(pygame.sprite.Sprite):
             self.x -= self.vel
             self.direction = 'left'
             self.current_sprite += 1
+        
+        if keys[pygame.K_e]:
+            if self.attacking == False:
+                self.attack()
+                self.attacking = True
             
         # Jump
         if not self.isJump:
@@ -101,3 +111,10 @@ class Player(pygame.sprite.Sprite):
     def health_update(self, win):
         pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, self.health_bar_height))
         pygame.draw.rect(win, (255, 255, 255), (self.health_bar_x, self.health_bar_y, self.health_bar_length, self.health_bar_height), self.health_bar_border)
+
+    def attack(self):
+        if self.counter_attack >= len(self.sprites_attack):
+            self.counter_attack = 0
+            self.attacking = False
+        self.image = pygame.transform.flip(self.sprites_attack[self.counter_attack], True if self.direction == 'left' else False, False)
+        self.counter_attack += 1

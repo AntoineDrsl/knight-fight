@@ -83,7 +83,7 @@ def main():
 
     while run:
         # Send current user info and get opponent ones
-        data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health, 'direction': p.direction })
+        data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health, 'direction': p.direction, 'attacking': p.attacking })
         # Update opponent
         p2Pos = read_pos(data['position'])
         if(p2.x != p2Pos[0] or p2.y != p2Pos[1]):
@@ -110,8 +110,18 @@ def main():
                     p.get_health(50)
                 if event.key == pygame.K_q:
                     p.get_damage(50)
-        
+            
         p.move()
+
+        # If Current player is attacking
+        if p.attacking == True:
+            p.attack()
+
+        # Is opponent is attacking
+        p2Attack = data['attacking']
+        if p2Attack:
+            p2.attack()
+
         redrawWindow(WIN, p, p2)
         clock.tick(60)
 

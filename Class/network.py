@@ -26,6 +26,9 @@ class Network:
     def getDirection(self):
         return self.data['direction']
 
+    def getAttacking(self):
+        return self.data['attacking']
+
     # Connect to server and return current player position (one time)
     def connect(self):
         try:

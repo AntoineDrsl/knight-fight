@@ -3,7 +3,6 @@ from dotenv import dotenv_values
 from _thread import *
 from functions import *
 import json
-import sys
 
 # Load .env
 CONFIG = dotenv_values()
@@ -42,6 +41,11 @@ LIFE = [
     CONFIG.get('DEFAULT_HEALTH')
 ]
 
+ATTACKING = [
+    False,
+    False
+]
+
 # Client listening
 def threaded_client(conn, player):
     # Connection info
@@ -49,7 +53,8 @@ def threaded_client(conn, player):
         'position': POS[player],
         'side': SIDE[player],
         'life': LIFE[player],
-        'direction': DIRECTION[player]
+        'direction': DIRECTION[player],
+        'attacking': ATTACKING[player]
     }).encode())
 
     reply = {}
@@ -61,6 +66,8 @@ def threaded_client(conn, player):
             POS[player] = data['position']
             LIFE[player] = data['health']
             DIRECTION[player] = data['direction']
+            ATTACKING[player]= data['attacking']
+            
 
             if not data:
                 print("Disconnected")
@@ -72,10 +79,12 @@ def threaded_client(conn, player):
                     reply['position'] = POS[0]
                     reply['health'] = LIFE[0]
                     reply['direction'] = DIRECTION[0]
+                    reply['attacking'] = ATTACKING[0]
                 else:
                     reply['position'] = POS[1]
                     reply['health'] = LIFE[1]
                     reply['direction'] = DIRECTION[1]
+                    reply['attacking'] = ATTACKING[1]
 
                 print("Received: ", data)
                 print("Sending: ", reply)
