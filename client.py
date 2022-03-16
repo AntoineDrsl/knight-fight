@@ -61,6 +61,10 @@ def redrawWindow(win, player, player2):
     ALL_SPRITES.draw(win)
     player.health_update(win)
     player2.health_update(win)
+    if player.attacking:
+        player.drawAttackHitbox(win)
+    if player2.attacking:
+        player2.drawAttackHitbox(win)
     pygame.display.update()
 
 # Launch loop game
@@ -113,14 +117,19 @@ def main():
             
         p.move()
 
-        # If Current player is attacking
+        # Current player attacking
         if p.attacking == True:
-            p.attack()
+            # Play animation
+            p.attack(WIN)
 
-        # Is opponent is attacking
-        p2Attack = data['attacking']
-        if p2Attack:
-            p2.attack()
+        # Opponent attacking
+        if data['attacking']:
+            # Play animation
+            p2.attacking = True
+            p2.attack(WIN)
+            # Take damage if collision
+            if p2.attackHitbox and p2.attackHitbox.colliderect(p.rect):
+                p.get_damage(1)
 
         redrawWindow(WIN, p, p2)
         CLOCK.tick(60)
