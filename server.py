@@ -86,8 +86,8 @@ def threaded_client(conn, player):
                     reply['direction'] = DIRECTION[1]
                     reply['attacking'] = ATTACKING[1]
 
-                print("Received: ", data)
-                print("Sending: ", reply)
+                # print("Received: ", data)
+                # print("Sending: ", reply)
 
             # Send to network
             conn.sendall(json.dumps(reply).encode())
