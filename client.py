@@ -17,11 +17,11 @@ WIN = pygame.display.set_mode((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('
 ALL_SPRITES = pygame.sprite.Group()
 
 # Background
-bg = Background('./assets/background/boat.png', [0, 0])
+BG = Background('./assets/background/boat.png', [0, 0])
 
 pygame.display.set_caption("Client")
-font = pygame.font.SysFont(None, 25)
-clock = pygame.time.Clock()
+FONT = pygame.font.SysFont(None, 25)
+CLOCK = pygame.time.Clock()
 
 def pause() :
     paused = True
@@ -43,10 +43,10 @@ def pause() :
         message_to_screen("Jeu en pause", (0, 0, 0, 100))
 
         pygame.display.update()
-        clock.tick(5)
+        CLOCK.tick(5)
 
 def text_objects(text, color) :
-    textSurface = font.render(text, True, color)
+    textSurface = FONT.render(text, True, color)
     return textSurface, textSurface.get_rect()
 
 def message_to_screen(msg, color):
@@ -57,7 +57,7 @@ def message_to_screen(msg, color):
 # Redraw window with new values
 def redrawWindow(win, player, player2):
     win.fill((0, 0, 0))
-    win.blit(bg.image, bg.rect)
+    win.blit(BG.image, BG.rect)
     ALL_SPRITES.draw(win)
     player.health_update(win)
     player2.health_update(win)
@@ -123,7 +123,7 @@ def main():
             p2.attack()
 
         redrawWindow(WIN, p, p2)
-        clock.tick(60)
+        CLOCK.tick(60)
 
 # Launch
 main()
