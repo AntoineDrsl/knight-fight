@@ -96,13 +96,8 @@ def main():
                     p.get_health(50)
                 if event.key == pygame.K_q:
                     p.get_damage(50)
-                # if event.key == pygame.K_UP : 
-                #     p.a_jump = True
-            
-
         
         p.move()
-        # p.jump()
         redrawWindow(WIN, p, p2)
         clock.tick(60)
 
