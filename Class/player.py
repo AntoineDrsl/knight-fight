@@ -9,7 +9,7 @@ import pygame
 CONFIG = dotenv_values()
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, side):
+    def __init__(self, x, y, side, direction):
 
         pygame.sprite.Sprite.__init__(self)
         if side == 'right': 
@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
 
         self.x = x
         self.y = y
+        self.direction = direction
         self.vel = 5
         self.circle = (self.x, self.y)
 
@@ -47,15 +48,18 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
            
         # Move
-        if keys[pygame.K_RIGHT] and self.x < int(CONFIG.get('WINDOW_WIDTH')):
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < int(CONFIG.get('WINDOW_WIDTH')):
             self.x += self.vel
+            self.direction = 'right'
             self.current_sprite += 1
-        if keys[pygame.K_LEFT] and self.x > 0:
+        if (keys[pygame.K_LEFT] or keys[pygame.K_q]) and self.x > 0:
             self.x -= self.vel
+            self.direction = 'left'
             self.current_sprite += 1
+            
         # Jump
         if not self.isJump:
-            if keys[pygame.K_SPACE]:
+            if (keys[pygame.K_SPACE] or keys[pygame.K_z]):
                 self.isJump = True
         else:
             if self.jumpCount >= (int(CONFIG.get('DEFAULT_JUMP')) * -1):
@@ -71,11 +75,16 @@ class Player(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
+        # Update sprite
         self.rect.center = (self.x, self.y)
-        
+
+        # Update sprite image
         if self.current_sprite >= len(self.sprites):
             self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
+
+        # Update sprite direction
+        self.image = pygame.transform.flip(self.image, True if self.direction == 'left' else False, False)
 
     def get_damage(self, amount):
         if self.current_health > 0:

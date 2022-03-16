@@ -22,6 +22,10 @@ class Network:
     def getSide(self):
         return self.data['side']
 
+    # Get player direction
+    def getDirection(self):
+        return self.data['direction']
+
     # Connect to server and return current player position (one time)
     def connect(self):
         try:

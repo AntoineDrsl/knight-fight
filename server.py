@@ -30,6 +30,12 @@ SIDE = [
     'right'
 ]
 
+# Default DIRECTION
+DIRECTION = [
+    'right',
+    'left'
+]
+
 # Default LIFE
 LIFE = [
     CONFIG.get('DEFAULT_HEALTH'),
@@ -42,7 +48,8 @@ def threaded_client(conn, player):
     conn.send(json.dumps({
         'position': POS[player],
         'side': SIDE[player],
-        'life': LIFE[player]
+        'life': LIFE[player],
+        'direction': DIRECTION[player]
     }).encode())
 
     reply = {}
@@ -53,6 +60,7 @@ def threaded_client(conn, player):
             data = json.loads(test)
             POS[player] = data['position']
             LIFE[player] = data['health']
+            DIRECTION[player] = data['direction']
 
             if not data:
                 print("Disconnected")
@@ -63,9 +71,11 @@ def threaded_client(conn, player):
                 if player == 1:
                     reply['position'] = POS[0]
                     reply['health'] = LIFE[0]
+                    reply['direction'] = DIRECTION[0]
                 else:
                     reply['position'] = POS[1]
                     reply['health'] = LIFE[1]
+                    reply['direction'] = DIRECTION[1]
 
                 print("Received: ", data)
                 print("Sending: ", reply)
