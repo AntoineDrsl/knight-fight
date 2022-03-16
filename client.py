@@ -71,17 +71,19 @@ def main():
     startPos = read_pos(n.getPos())
     startSide = n.getSide()
     opponentSide = 'right' if startSide == 'left' else 'left'
+    startDirection = n.getDirection()
+    opponentDirection = 'right' if startDirection == 'left' else 'left'
     # Create current player
-    p = Player(startPos[0], startPos[1], (0, 255, 0), startSide)
+    p = Player(startPos[0], startPos[1], (0, 255, 0), startSide, startDirection)
     # Opponent
-    p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), (255, 0, 0), opponentSide)
+    p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), (255, 0, 0), opponentSide, opponentDirection)
 
     # ADD SPRITE TO THE LIST
     ALL_SPRITES.add([p, p2])
 
     while run:
         # Send current user info and get opponent ones
-        data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health })
+        data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health, 'direction': p.direction })
         # Update opponent
         p2Pos = read_pos(data['position'])
         if(p2.x != p2Pos[0] or p2.y != p2Pos[1]):
@@ -89,6 +91,7 @@ def main():
         p2.x = p2Pos[0]
         p2.y = p2Pos[1]
         p2.current_health = int(data['health'])
+        p2.direction = data['direction']
         
         ALL_SPRITES.update()
 
