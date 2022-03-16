@@ -14,10 +14,10 @@ class Player(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self)
         if side == 'right': 
-            self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,13)]
+            self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,18)]
             self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/current/attack', str(x) + '.png')) for x in range(1,13)]
         else: 
-            self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,13)]
+            self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,18)]
             self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/opponent/attack', str(x) + '.png')) for x in range(1,13)]
         # SPRITE IMAGE
         self.current_sprite = 0
@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.counter_attack = 0
         # SPRITE HITBOX        
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.topleft = (x, y)
 
         self.x = x
         self.y = y
@@ -86,7 +86,7 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         # Update sprite
-        self.rect.center = (self.x, self.y)
+        self.rect.topleft = (self.x, self.y)
 
         # Update sprite image
         if self.current_sprite >= len(self.sprites):
@@ -95,6 +95,7 @@ class Player(pygame.sprite.Sprite):
 
         # Update sprite direction
         self.image = pygame.transform.flip(self.image, True if self.direction == 'left' else False, False)
+        self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
 
     def get_damage(self, amount):
         if self.current_health > 0:
@@ -117,4 +118,5 @@ class Player(pygame.sprite.Sprite):
             self.counter_attack = 0
             self.attacking = False
         self.image = pygame.transform.flip(self.sprites_attack[self.counter_attack], True if self.direction == 'left' else False, False)
+        self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
         self.counter_attack += 1
