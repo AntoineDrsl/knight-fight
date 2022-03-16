@@ -13,13 +13,17 @@ class Player():
         self.vel = 5
         self.circle = (self.x, self.y)
 
+        # Health bar
+        self.health_bar_length = int(CONFIG.get('HEALTH_BAR_WIDTH'))
+        self.health_bar_height = int(CONFIG.get('HEALTH_BAR_HEIGHT'))
+        self.health_bar_border = int(CONFIG.get('HEALTH_BAR_BORDER'))
+        self.health_bar_x = int(CONFIG.get('HEALTH_BAR_RIGHT')) if side == 'left' else int(CONFIG.get('HEALTH_BAR_LEFT'))
+        self.health_bar_y = int(CONFIG.get('HEALTH_BAR_TOP'))
+
         # Health
         self.current_health = int(CONFIG.get('DEFAULT_HEALTH'))
         self.max_health = int(CONFIG.get('DEFAULT_HEALTH'))
-        self.health_bar_length = int(CONFIG.get('HEALTH_BAR_WIDTH'))
         self.health_ratio = self.max_health / self.health_bar_length
-        self.health_bar_x = int(CONFIG.get('HEALTH_BAR_RIGHT')) if side == 'left' else int(CONFIG.get('HEALTH_BAR_LEFT'))
-        self.health_bar_y = int(CONFIG.get('HEALTH_BAR_TOP'))
     
     def draw(self, win):
         pygame.draw.circle(win, self.color, self.circle, self.radius)
@@ -56,4 +60,5 @@ class Player():
             self.current_health = self.max_health
 
     def basic_health(self, win):
-        pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, int(CONFIG.get('HEALTH_BAR_HEIGHT'))))
+        pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, self.health_bar_height))
+        pygame.draw.rect(win, (255, 255, 255), (self.health_bar_x, self.health_bar_y, self.health_bar_length, self.health_bar_height), self.health_bar_border)

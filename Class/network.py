@@ -12,11 +12,15 @@ class Network:
         self.server = CONFIG.get('SERVER_IP')
         self.port = int(CONFIG.get('SERVER_PORT'))
         self.addr = (self.server, self.port)
-        self.pos = self.connect()['position']
+        self.data = self.connect()
     
     # Get player positoin
     def getPos(self):
-        return self.pos
+        return self.data['position']
+
+    # Get player side
+    def getSide(self):
+        return self.data['side']
 
     # Connect to server and return current player position (one time)
     def connect(self):
@@ -29,8 +33,6 @@ class Network:
     # Send current player position to server and get opponent one
     def send(self, data):
         try:
-            # TODO - Test here
-            print('network', data)
             self.client.send(json.dumps(data).encode())
             return json.loads(self.client.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode())
         except socket.error as e:
