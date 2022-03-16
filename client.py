@@ -72,9 +72,9 @@ def main():
     startSide = n.getSide()
     opponentSide = 'right' if startSide == 'left' else 'left'
     # Create current player
-    p = Player(startPos[0], startPos[1], (0, 255, 0), startSide)
+    p = Player(startPos[0], startPos[1], startSide)
     # Opponent
-    p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), (255, 0, 0), opponentSide)
+    p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), opponentSide)
 
     # ADD SPRITE TO THE LIST
     ALL_SPRITES.add([p, p2])

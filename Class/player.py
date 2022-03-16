@@ -9,10 +9,12 @@ import pygame
 CONFIG = dotenv_values()
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, side):
+    def __init__(self, x, y, side):
 
         pygame.sprite.Sprite.__init__(self)
-        self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,13)]
+        if side == 'right': 
+            self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,13)]
+        else: self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,13)]
         # SPRITE IMAGE
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
@@ -22,7 +24,6 @@ class Player(pygame.sprite.Sprite):
 
         self.x = x
         self.y = y
-        self.color = color
         self.vel = 5
         self.circle = (self.x, self.y)
 
