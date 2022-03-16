@@ -29,8 +29,6 @@ class Network:
     # Send current player position to server and get opponent one
     def send(self, data):
         try:
-            # TODO - Test here
-            print('network', data)
             self.client.send(json.dumps(data).encode())
             return json.loads(self.client.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode())
         except socket.error as e:
