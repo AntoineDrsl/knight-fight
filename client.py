@@ -12,7 +12,7 @@ CONFIG = dotenv_values()
 
 # Create window
 WIN = pygame.display.set_mode((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
-bg = Background('./sprite/background.png', [0,0])
+bg = Background('./assets/background/boat.png', [0, 0])
 pygame.display.set_caption("Client")
 
 
