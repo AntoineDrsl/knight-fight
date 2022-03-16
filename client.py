@@ -2,6 +2,7 @@ import pygame
 from Class.network import Network
 from Class.player import Player
 from Class.background import Background
+from Class.button import Button
 from dotenv import dotenv_values
 from functions import *
 
@@ -23,27 +24,36 @@ pygame.display.set_caption("Client")
 FONT = pygame.font.SysFont(None, 25)
 CLOCK = pygame.time.Clock()
 
+
 def pause() :
     paused = True
 
     while paused is True:
         for event in pygame.event.get() :
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            
-            if event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_ESCAPE:
-                    paused = False
-                elif event.key == pygame.K_q :
-                    pygame.quit()
-                    quit()
-        WIN.fill((255, 255, 255, 100))
+                quit_game()
 
-        message_to_screen("Jeu en pause", (0, 0, 0, 100))
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                quit.update(pygame.mouse.get_pos())
+                paused = continu.update(pygame.mouse.get_pos())
+        
+        s = pygame.Surface((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
+        s.set_alpha(100)
+        s.fill((255, 255, 255))
+        WIN.blit(s, (0,0))
+        
+
+        message_to_screen("Jeu en pause", (0, 0, 0))
+        quit = Button (100, 550, 300, 60, "Quitter", quit_game)
+        continu = Button(650, 550, 300, 60, "Continuer", continue_game)
+
+        quit.render(WIN, (200, 0, 0))
+        continu.render(WIN, (0, 200, 0))
 
         pygame.display.update()
         CLOCK.tick(5)
+
+
 
 def text_objects(text, color) :
     textSurface = FONT.render(text, True, color)
