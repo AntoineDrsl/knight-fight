@@ -12,11 +12,15 @@ class Network:
         self.server = CONFIG.get('SERVER_IP')
         self.port = int(CONFIG.get('SERVER_PORT'))
         self.addr = (self.server, self.port)
-        self.pos = self.connect()['position']
+        self.data = self.connect()
     
     # Get player positoin
     def getPos(self):
-        return self.pos
+        return self.data['position']
+
+    # Get player side
+    def getSide(self):
+        return self.data['side']
 
     # Connect to server and return current player position (one time)
     def connect(self):

@@ -24,28 +24,53 @@ POS = [
     CONFIG.get('P2_DEFAULT_X') + ',' + CONFIG.get('P2_DEFAULT_Y')
 ]
 
+# Default side
+SIDE = [
+    'left',
+    'right'
+]
+
+# Default LIFE
+LIFE = [
+    CONFIG.get('DEFAULT_HEALTH'),
+    CONFIG.get('DEFAULT_HEALTH')
+]
+
 # Client listening
 def threaded_client(conn, player):
-    conn.send(json.dumps({ 'position': POS[player] }).encode())
+    # Connection info
+    conn.send(json.dumps({
+        'position': POS[player],
+        'side': SIDE[player],
+        'life': LIFE[player]
+    }).encode())
+
     reply = {}
     while True:
         try:
+            # Get data send by network
             test = conn.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode()
             data = json.loads(test)
             POS[player] = data['position']
+            LIFE[player] = data['health']
 
             if not data:
                 print("Disconnected")
                 break
             else:
+                # Prepare response
+                reply['side'] = SIDE[player]
                 if player == 1:
                     reply['position'] = POS[0]
+                    reply['health'] = LIFE[0]
                 else:
                     reply['position'] = POS[1]
+                    reply['health'] = LIFE[1]
 
                 print("Received: ", data)
                 print("Sending: ", reply)
 
+            # Send to network
             conn.sendall(json.dumps(reply).encode())
         except socket.error as e:
             print(e)
