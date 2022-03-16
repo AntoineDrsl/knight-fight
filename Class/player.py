@@ -25,6 +25,8 @@ class Player(pygame.sprite.Sprite):
         self.color = color
         self.vel = 5
         self.circle = (self.x, self.y)
+
+        # Jump
         self.isJump = False
         self.jumpCount = int(CONFIG.get('DEFAULT_JUMP'))
 
@@ -49,6 +51,7 @@ class Player(pygame.sprite.Sprite):
             self.current_sprite += 1
         if keys[pygame.K_LEFT] and self.x > 0:
             self.x -= self.vel
+            self.current_sprite += 1
         # Jump
         if not self.isJump:
             if keys[pygame.K_SPACE]:

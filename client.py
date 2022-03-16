@@ -16,10 +16,10 @@ WIN = pygame.display.set_mode((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('
 # ALL SPRITES
 ALL_SPRITES = pygame.sprite.Group()
 
+# Background
 bg = Background('./assets/background/boat.png', [0, 0])
+
 pygame.display.set_caption("Client")
-
-
 font = pygame.font.SysFont(None, 25)
 clock = pygame.time.Clock()
 
@@ -44,7 +44,6 @@ def pause() :
 
         pygame.display.update()
         clock.tick(5)
-
 
 def text_objects(text, color) :
     textSurface = font.render(text, True, color)
@@ -85,6 +84,8 @@ def main():
         data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health })
         # Update opponent
         p2Pos = read_pos(data['position'])
+        if(p2.x != p2Pos[0] or p2.y != p2Pos[1]):
+            p2.current_sprite += 1
         p2.x = p2Pos[0]
         p2.y = p2Pos[1]
         p2.current_health = int(data['health'])
