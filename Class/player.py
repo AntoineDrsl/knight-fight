@@ -47,7 +47,7 @@ class Player():
         else:
             if self.jumpCount >= (int(CONFIG.get('DEFAULT_JUMP')) * -1):
                 # When jumping
-                self.y -= (self.jumpCount * abs(self.jumpCount)) * 0.5
+                self.y -= round((self.jumpCount * abs(self.jumpCount)) * 0.5)
                 self.jumpCount -= 1
             else:
                 # When jump finish
