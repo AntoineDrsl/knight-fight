@@ -22,15 +22,19 @@ def redrawWindow(win, player, player2):
 def main():
     run = True
     clock = pygame.time.Clock()
-    # Current player
+    # Create network for player
     n = Network()
     startPos = read_pos(n.getPos())
+    # Create current player
     p = Player(startPos[0], startPos[1], (0, 255, 0), 'left')
     # Opponent
     p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), (255, 0, 0), 'right')
 
     while run:
-        p2Pos = read_pos(n.send(make_pos((p.x, p.y))))
+        # Send current user position and get opponent position
+        data = n.send({ 'position': make_pos((p.x, p.y)) })
+        print('client: ', data)
+        p2Pos = read_pos(data['position'])
         p2.x = p2Pos[0]
         p2.y = p2Pos[1]
         p2.update()

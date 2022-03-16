@@ -2,6 +2,8 @@ import socket
 from dotenv import dotenv_values
 from _thread import *
 from functions import *
+import json
+import sys
 
 # Load .env
 CONFIG = dotenv_values()
@@ -18,33 +20,35 @@ print("Waiting for a connection, Server started")
 
 # Default position
 POS = [
-    (int(CONFIG.get('P1_DEFAULT_X')), int(CONFIG.get('P1_DEFAULT_Y'))),
-    (int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')))
+    CONFIG.get('P1_DEFAULT_X') + ',' + CONFIG.get('P1_DEFAULT_Y'),
+    CONFIG.get('P2_DEFAULT_X') + ',' + CONFIG.get('P2_DEFAULT_Y')
 ]
 
 # Client listening
 def threaded_client(conn, player):
-    conn.send(str.encode(make_pos(POS[player])))
-    reply = ""
+    conn.send(json.dumps({ 'position': POS[player] }).encode())
+    reply = {}
     while True:
         try:
-            data = read_pos(conn.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode())
-            POS[player] = data
+            test = conn.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode()
+            data = json.loads(test)
+            POS[player] = data['position']
 
             if not data:
                 print("Disconnected")
                 break
             else:
                 if player == 1:
-                    reply = POS[0]
+                    reply['position'] = POS[0]
                 else:
-                    reply = POS[1]
+                    reply['position'] = POS[1]
 
                 print("Received: ", data)
                 print("Sending: ", reply)
 
-            conn.sendall(str.encode(make_pos(reply)))
-        except:
+            conn.sendall(json.dumps(reply).encode())
+        except socket.error as e:
+            print(e)
             break
 
     print("Lost connection")
