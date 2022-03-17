@@ -21,11 +21,13 @@ class Hearth(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
 
+    # Move hearth down
     def move(self):
         if(self.y <= int(CONFIG.get('GROUND_Y'))):
             self.y += 1
         self.rect.topleft = (self.x, self.y)
 
+    # Set new position
     def setPosition(self, x, y):
         self.x = x
         self.y = y
