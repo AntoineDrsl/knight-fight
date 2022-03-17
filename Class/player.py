@@ -63,7 +63,6 @@ class Player(pygame.sprite.Sprite):
         self.health_ratio = self.max_health / self.health_bar_length
 
         # Sound
-        self.pain = pygame.mixer.Sound(os.path.join('assets/characters/sounds', 'pain.wav'))
         self.slash = pygame.mixer.Sound(os.path.join('assets/characters/sounds', 'slash.wav'))
     
     def move(self):
@@ -168,4 +167,3 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.flip(self.sprites_hurt[self.counter_hurt], True if self.direction == 'left' else False, False)
         self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
         self.counter_hurt += 1
-        self.pain.play()
