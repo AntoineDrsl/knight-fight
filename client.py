@@ -134,7 +134,7 @@ def main():
 
         if p.current_health <= 0:
             lose(WIN)
-        elif p2.current_health <= 1:
+        elif p2.current_health <= 2:
             win(WIN)
 
         ### EVENTS ###
