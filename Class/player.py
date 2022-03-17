@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
             
         # SPRITE IMAGE
         self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+        self.image = pygame.transform.scale(self.sprites[self.current_sprite], (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
         self.attacking = False
         self.counter_attack = 0
 
@@ -96,11 +96,10 @@ class Player(pygame.sprite.Sprite):
         # Update sprite image
         if self.current_sprite >= len(self.sprites):
             self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
+        self.image = pygame.transform.scale(self.sprites[self.current_sprite], (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
 
         # Update sprite direction
         self.image = pygame.transform.flip(self.image, True if self.direction == 'left' else False, False)
-        self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
 
     def get_damage(self, amount):
         if self.current_health > 0:

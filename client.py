@@ -122,8 +122,6 @@ def main():
                     pause()
                 if event.key == pygame.K_a:
                     p.get_health(50)
-                if event.key == pygame.K_q:
-                    p.get_damage(50)
             
         p.move()
 
