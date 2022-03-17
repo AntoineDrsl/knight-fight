@@ -1,11 +1,11 @@
 from json import load
 import os
+from pickle import TRUE
 from posixpath import basename
 from traceback import print_tb
 from unittest.mock import patch
 from dotenv import dotenv_values
 import pygame
-
 # Load .env
 CONFIG = dotenv_values()
 
@@ -16,15 +16,21 @@ class Player(pygame.sprite.Sprite):
         if side == 'right': 
             self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,18)]
             self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/current/attack', str(x) + '.png')) for x in range(1,13)]
+            self.sprites_hurt = [pygame.image.load(os.path.join('assets/characters/current/hurt', str(x) + '.png')) for x in range(1,13)]
         else: 
             self.sprites = [pygame.image.load(os.path.join('assets/characters/opponent/movement', str(x) + '.png')) for x in range(1,18)]
             self.sprites_attack = [pygame.image.load(os.path.join('assets/characters/opponent/attack', str(x) + '.png')) for x in range(1,13)]
-            
+            self.sprites_hurt = [pygame.image.load(os.path.join('assets/characters/opponent/hurt', str(x) + '.png')) for x in range(1,13)]
+
         # SPRITE IMAGE
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
+        # ATTACK COUNTER
         self.attacking = False
         self.counter_attack = 0
+        # HURT COUNTER
+        self.counter_hurt = 0
+        self.hurting = False
 
         # SPRITE HITBOX        
         self.rect = self.image.get_rect()
@@ -108,6 +114,9 @@ class Player(pygame.sprite.Sprite):
         if self.current_health <= 0:
             self.current_health = 0
 
+        if self.hurting == False:
+            self.hurting = True
+
     def get_health(self, amount):
         if self.current_health < self.max_health:
             self.current_health += amount
@@ -118,7 +127,7 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, self.health_bar_height))
         pygame.draw.rect(win, (255, 255, 255), (self.health_bar_x, self.health_bar_y, self.health_bar_length, self.health_bar_height), self.health_bar_border)
 
-    def attack(self, win):
+    def attack(self):
         # Attack animation
         if self.counter_attack >= len(self.sprites_attack):
             self.counter_attack = 0
@@ -126,9 +135,17 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.flip(self.sprites_attack[self.counter_attack], True if self.direction == 'left' else False, False)
         self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
         self.counter_attack += 1
-        self.counter_attack += 1
 
     def drawAttackHitbox(self, win):
         # Attack hitbox
         hitbox_x = (self.x + int(CONFIG.get('HITBOX_X_RIGHT'))) if self.direction == 'right' else (self.x - int(CONFIG.get('HITBOX_X_LEFT')))
         self.attackHitbox = pygame.draw.rect(win, (255, 0, 0), (hitbox_x, self.y - int(CONFIG.get('HITBOX_Y')), int(CONFIG.get('HITBOX_WIDTH')), int(CONFIG.get('HITBOX_HEIGHT'))))
+
+    def drawHurtAnimation(self):
+        # Hurt animation
+        if self.counter_hurt >= len(self.sprites_hurt):
+            self.counter_hurt = 0
+            self.attacking = False
+        self.image = pygame.transform.flip(self.sprites_hurt[self.counter_hurt], True if self.direction == 'left' else False, False)
+        self.image = pygame.transform.scale(self.image, (int(CONFIG.get('WINDOW_WIDTH')) / 5, int(CONFIG.get('WINDOW_HEIGHT')) / 5))
+        self.counter_hurt += 1

@@ -130,16 +130,22 @@ def main():
         # Current player attacking
         if p.attacking == True:
             # Play animation
-            p.attack(WIN)
+            p.attack()
+            if p.attackHitbox and p.attackHitbox.colliderect(p2.rect):
+                p2.hurting = True
+                if p2.hurting == True:
+                    p2.drawHurtAnimation()
 
         # Opponent attacking
         if data['attacking']:
             # Play animation
             p2.attacking = True
-            p2.attack(WIN)
+            p2.attack()
             # Take damage if collision
             if p2.attackHitbox and p2.attackHitbox.colliderect(p.rect):
                 p.get_damage(1)
+                if p.hurting == True:
+                    p.drawHurtAnimation()
 
         redrawWindow(WIN, p, p2)
         CLOCK.tick(60)
