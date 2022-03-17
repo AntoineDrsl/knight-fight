@@ -123,7 +123,7 @@ def main():
             hearth = Hearth(hearthPos[0], hearthPos[1])
 
         # Check hearth collision
-        if hearthCooldown == 0 and hearth.rect.colliderect(p.rect):
+        if hearthCooldown == 0 and hearth.rect.colliderect(p.hitbox):
             p.get_health(50)
             ALL_SPRITES.remove(hearth)
             hearth = False
@@ -159,7 +159,7 @@ def main():
         if p.attacking == True:
             # Play animation
             p.attack()
-            if p.attackHitbox and p.attackHitbox.colliderect(p2.rect):
+            if p.attackHitbox and p.attackHitbox.colliderect(p2.hitbox):
                 p2.hurting = True
                 if p2.hurting == True:
                     p2.drawHurtAnimation()
@@ -170,7 +170,7 @@ def main():
             p2.attacking = True
             p2.attack()
             # Take damage if collision
-            if p2.attackHitbox and p2.attackHitbox.colliderect(p.rect):
+            if p2.attackHitbox and p2.attackHitbox.colliderect(p.hitbox):
                 p.get_damage(1)
                 if p.hurting == True:
                     p.drawHurtAnimation()
