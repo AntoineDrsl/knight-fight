@@ -36,7 +36,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (x, y)
         self.hitbox = pygame.Rect(x + 90, y + 30, 40, 90)
 
-        # ATTACK HITBOX
+        # ATTACK
+        self.damage = 2
         self.attackHitbox = None
 
         # MOVE

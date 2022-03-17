@@ -126,7 +126,7 @@ def main():
             p2.attack()
             # Take damage if collision
             if p2.attackHitbox and p2.attackHitbox.colliderect(p.hitbox):
-                p.get_damage(1)
+                p.get_damage(p.damage)
                 if p.hurting == True:
                     p.drawHurtAnimation()
 
