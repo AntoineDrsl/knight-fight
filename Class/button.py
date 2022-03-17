@@ -4,6 +4,7 @@ class Button :
     def __init__(self, x, y, width, height, text, command) : 
         self.command = command
 
+        # Button
         self.bg = pygame.Rect(x, y, width, height)
         self.font = pygame.font.SysFont(None, 25)
         self.btnText = self.font.render(text, True, (255, 255, 255))

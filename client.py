@@ -1,11 +1,10 @@
 import pygame
 from Class.network import Network
 from Class.player import Player
-from Class.background import Background
 from Class.hearth import Hearth
-from Class.button import Button
 from dotenv import dotenv_values
 from functions import *
+from interface import *
 
 pygame.init()
 
@@ -14,104 +13,27 @@ CONFIG = dotenv_values()
 
 # Create window
 WIN = pygame.display.set_mode((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
-
-# ALL SPRITES
-ALL_SPRITES = pygame.sprite.Group()
-
-# Background
-BG = Background('./assets/background/boat.png', [0, 0])
-pauseBG = Background('./assets/background/underwater.jpeg', [-500, -750])
-winBG = Background('./assets/background/victory.jpeg', [0, 0])
-
 pygame.display.set_caption("Client")
-FONT = pygame.font.SysFont(None, 70)
 CLOCK = pygame.time.Clock()
 
-def pause() :
-    paused = True
-
-    while paused is True:
-        for event in pygame.event.get() :
-            if event.type == pygame.QUIT:
-                quit_game()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                quit.update(pygame.mouse.get_pos())
-                paused = continu.update(pygame.mouse.get_pos())
-        
-        s = pygame.Surface((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
-        s.set_alpha(100)
-        s.fill((255, 255, 255))
-        s.blit(pauseBG.image, pauseBG.rect)
-        WIN.blit(s, (0,0))
-        
-
-        message_to_screen("Jeu en pause", (0, 0, 0))
-        quit = Button (100, 550, 300, 60, "Quitter", quit_game)
-        continu = Button(650, 550, 300, 60, "Continuer", continue_game)
-
-        quit.render(WIN, (200, 0, 0))
-        continu.render(WIN, (0, 200, 0))
-
-        pygame.display.update()
-        CLOCK.tick(5)
-
-def lose() :
-    lose = True
-    while lose is True:
-        for event in pygame.event.get() :
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        WIN.fill((0, 0, 0))
-
-        message_to_screen("Game Over !", (255, 255, 255))
-
-        pygame.display.update()
-
-    
-def win():
-    win = True
-
-    while win is True:
-        for event in pygame.event.get() :
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-
-        s = pygame.Surface((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
-        s.set_alpha(100)
-        s.fill((255, 255, 255))
-        s.blit(winBG.image, winBG.rect)
-        WIN.blit(s, (0,0))
-
-        message_to_screen("Victory !", (255, 255, 255))
-
-        pygame.display.update()
-
-    
-
-
-def text_objects(text, color) :
-    textSurface = FONT.render(text, True, color)
-    return textSurface, textSurface.get_rect()
-
-def message_to_screen(msg, color):
-    textSurf, textRect = text_objects(msg, color)
-    textRect.center = (int(CONFIG.get('WINDOW_WIDTH'))/2), (int(CONFIG.get('WINDOW_HEIGHT'))/2)
-    WIN.blit(textSurf, textRect)
+# ALL SPRITES
+BG = Background('./assets/background/boat.png', [0, 0])
+ALL_SPRITES = pygame.sprite.Group()
 
 # Redraw window with new values
 def redrawWindow(win, player, player2):
-    win.fill((0, 0, 0))
+    # Make background
     win.blit(BG.image, BG.rect)
-    ALL_SPRITES.draw(win)
+    # Update healthes
     player.health_update(win)
     player2.health_update(win)
+    # Create hitboxes
     if player.attacking:
         player.drawAttackHitbox(win)
     if player2.attacking:
         player2.drawAttackHitbox(win)
+    # Update sprites
+    ALL_SPRITES.draw(win)
     pygame.display.update()
 
 # Launch loop game
@@ -136,6 +58,8 @@ def main():
     ALL_SPRITES.add([p, p2])
 
     while run:
+        ### OPPONENT ###
+
         # Send current user info and get opponent ones
         data = n.send({ 
             'position': make_pos((p.x, p.y)), 
@@ -154,6 +78,8 @@ def main():
         p2.current_health = int(data['health'])
         p2.direction = data['direction']
 
+        ### HEARTH ###
+
         # Get hearth position from server
         hearthPos = read_pos(data['hearth'])
         if hearth:
@@ -168,6 +94,7 @@ def main():
             hearth = False
             hearthCooldown = int(CONFIG.get('HEARTH_COOLDOWN'))
 
+        # Pass hearth cooldown
         if hearthCooldown > 0:
             hearthCooldown -= 1
 
@@ -178,25 +105,10 @@ def main():
         # Update all sprites
         ALL_SPRITES.update()
 
-        for event in pygame.event.get():
-                
-            # Quit
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
-
-            # Test
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE : 
-                    pause()
-                if event.key == pygame.K_a:
-                    p.get_health(50)
-                if event.key == pygame.K_p:
-                    lose()
-                if event.key == pygame.K_g:
-                    win()
-            
+        # Update current user
         p.move()
+
+        ### Attack ###
 
         # Current player attacking
         if p.attacking == True:
@@ -218,6 +130,26 @@ def main():
                 if p.hurting == True:
                     p.drawHurtAnimation()
 
+        ### INTERFACE ###
+
+        if p.current_health <= 0:
+            lose(WIN)
+        elif p2.current_health <= 1:
+            win(WIN)
+
+        ### EVENTS ###
+
+        for event in pygame.event.get():
+            # Quit
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                # Pause
+                if event.key == pygame.K_ESCAPE : 
+                    pause(WIN)
+
+        # Update window
         redrawWindow(WIN, p, p2)
         CLOCK.tick(60)
 

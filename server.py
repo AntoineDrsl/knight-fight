@@ -18,41 +18,22 @@ except socket.error as e:
 SOCKET.listen(2)
 print("Waiting for a connection, Server started")
 
-# Default position
+# Default values
 POS = [
     CONFIG.get('P1_DEFAULT_X') + ',' + CONFIG.get('P1_DEFAULT_Y'),
     CONFIG.get('P2_DEFAULT_X') + ',' + CONFIG.get('P2_DEFAULT_Y')
 ]
-
-# Default side
-SIDE = [
-    'left',
-    'right'
-]
-
-# Default DIRECTION
-DIRECTION = [
-    'right',
-    'left'
-]
-
-# Default LIFE
-LIFE = [
-    CONFIG.get('DEFAULT_HEALTH'),
-    CONFIG.get('DEFAULT_HEALTH')
-]
-
-ATTACKING = [
-    False,
-    False
-]
-
+SIDE = ['left', 'right']
+DIRECTION = ['right', 'left']
+LIFE = [CONFIG.get('DEFAULT_HEALTH'), CONFIG.get('DEFAULT_HEALTH')]
+ATTACKING = [False, False]
 HEARTH_X = randrange(int(CONFIG.get('WINDOW_WIDTH')))
 HEARTH_Y = -10
 HEARTH = str(HEARTH_X) + ',' + str(HEARTH_Y)
 
 # Client listening
 def threaded_client(conn, player):
+    # Use global variables
     global CURRENT_PLAYER
     global HEARTH_X
     global HEARTH_Y
@@ -72,9 +53,9 @@ def threaded_client(conn, player):
     while True:
         try:
             # Get data send by network
-            test = conn.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode()
-            if test:
-                data = json.loads(test)
+            network_data = conn.recv(int(CONFIG.get('SERVER_BUFSIZE'))).decode()
+            if network_data:
+                data = json.loads(network_data)
                 POS[player] = data['position']
                 LIFE[player] = data['health']
                 DIRECTION[player] = data['direction']
@@ -113,6 +94,7 @@ def threaded_client(conn, player):
             print(e)
             break
 
+    # Remove user if disconnect
     print("Lost connection")
     CURRENT_PLAYER -= 1
     conn.close()

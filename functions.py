@@ -9,9 +9,11 @@ def read_pos(str):
 def make_pos(tup):
     return str(tup[0]) + "," + str(tup[1])
 
+# Quit game
 def quit_game() : 
     pygame.quit()
     quit()
 
+# Continue game
 def continue_game() :
-    return  False
+    return False
