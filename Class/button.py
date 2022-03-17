@@ -14,5 +14,5 @@ class Button :
     
     def render(self, display, color) :
         self.posRect = self.btnText.get_rect(center = (self.bg.x + self.bg.width/2, self.bg.y + self.bg.height/2))
-        pygame.draw.rect(display, color, self.bg)
+        pygame.draw.rect(display, color, self.bg, border_radius= 15)
         display.blit(self.btnText, self.posRect)
