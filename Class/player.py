@@ -36,7 +36,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (x, y)
         self.hitbox = pygame.Rect(x + 90, y + 30, 40, 90)
 
-        # ATTACK HITBOX
+        # ATTACK
+        self.damage = 2
         self.attackHitbox = None
 
         # MOVE
@@ -69,11 +70,11 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
            
         # Move
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < int(CONFIG.get('WINDOW_WIDTH')):
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < (int(CONFIG.get('WINDOW_WIDTH')) - 150):
             self.x += self.vel
             self.direction = 'right'
             self.current_sprite += 1
-        if (keys[pygame.K_LEFT] or keys[pygame.K_q]) and self.x > 0:
+        if (keys[pygame.K_LEFT] or keys[pygame.K_q]) and self.x > -75:
             self.x -= self.vel
             self.direction = 'left'
             self.current_sprite += 1
