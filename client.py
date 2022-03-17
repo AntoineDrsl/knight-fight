@@ -148,10 +148,6 @@ def main():
                 # Pause
                 if event.key == pygame.K_ESCAPE : 
                     pause(WIN)
-                if event.key == pygame.K_p:
-                    lose(WIN)
-                if event.key == pygame.K_g:
-                    win(WIN)
 
         # Update window
         redrawWindow(WIN, p, p2)

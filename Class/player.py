@@ -61,8 +61,7 @@ class Player(pygame.sprite.Sprite):
         self.max_health = int(CONFIG.get('DEFAULT_HEALTH'))
         self.health_ratio = self.max_health / self.health_bar_length
 
-
-
+        # Sound
         self.pain = pygame.mixer.Sound(os.path.join('assets/characters/sounds', 'pain.wav'))
         self.slash = pygame.mixer.Sound(os.path.join('assets/characters/sounds', 'slash.wav'))
     
@@ -79,10 +78,17 @@ class Player(pygame.sprite.Sprite):
             self.direction = 'left'
             self.current_sprite += 1
         
+        # Attack
         if keys[pygame.K_e]:
             if self.attacking == False:
                 self.attacking = True
             self.slash.play()
+
+        # Sprint
+        if keys[pygame.K_LSHIFT]:
+            self.vel = 10
+        else:
+            self.vel = 5
             
         # Jump
         if not self.isJump:
