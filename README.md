@@ -29,7 +29,30 @@ python3 server.py
 If the server has succesfully started, the terminal should have print *Waiting for a connection, Server started*
 If not please check your IP address and/or the Port you are using
 
-Then launch in a second a terminal
+Then launch in a second terminal
 ```bash
 python3 client.py
 ```
+
+It should have launch the game, if not please check your IP address and/or the Port you are using
+
+Finally launch in a third terminal for the second player if you play in local
+
+Or in the terminal of the second laptop 
+```bash
+python3 client.py
+```
+
+## How to play
+**Q** | **LEFT_ARROW** - Left  
+**D** | **RIGHT_ARROW** - Right  
+**Z** | **SPACE** - Jump  
+**E** - Attack  
+**SHIFT** - Sprint
+
+Just SMASH your opponent until he dies.
+
+___
+HAVE FUN !
+
+Nicolas Brazzolotto - Antoine Durussel - Benjamin Pichon

@@ -131,7 +131,6 @@ def main():
                     p.drawHurtAnimation()
 
         ### INTERFACE ###
-
         if p.current_health <= 0:
             lose(WIN)
         elif p2.current_health <= 1:
