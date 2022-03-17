@@ -20,9 +20,11 @@ ALL_SPRITES = pygame.sprite.Group()
 
 # Background
 BG = Background('./assets/background/boat.png', [0, 0])
+pauseBG = Background('./assets/background/underwater.jpeg', [-500, -750])
+winBG = Background('./assets/background/victory.jpeg', [0, 0])
 
 pygame.display.set_caption("Client")
-FONT = pygame.font.SysFont(None, 25)
+FONT = pygame.font.SysFont(None, 70)
 CLOCK = pygame.time.Clock()
 
 def pause() :
@@ -40,6 +42,7 @@ def pause() :
         s = pygame.Surface((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
         s.set_alpha(100)
         s.fill((255, 255, 255))
+        s.blit(pauseBG.image, pauseBG.rect)
         WIN.blit(s, (0,0))
         
 
@@ -52,6 +55,42 @@ def pause() :
 
         pygame.display.update()
         CLOCK.tick(5)
+
+def lose() :
+    lose = True
+    while lose is True:
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        WIN.fill((0, 0, 0))
+
+        message_to_screen("Game Over !", (255, 255, 255))
+
+        pygame.display.update()
+
+    
+def win():
+    win = True
+
+    while win is True:
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        s = pygame.Surface((int(CONFIG.get('WINDOW_WIDTH')), int(CONFIG.get('WINDOW_HEIGHT'))))
+        s.set_alpha(100)
+        s.fill((255, 255, 255))
+        s.blit(winBG.image, winBG.rect)
+        WIN.blit(s, (0,0))
+
+        message_to_screen("Victory !", (255, 255, 255))
+
+        pygame.display.update()
+
+    
+
 
 def text_objects(text, color) :
     textSurface = FONT.render(text, True, color)
@@ -152,6 +191,10 @@ def main():
                     pause()
                 if event.key == pygame.K_a:
                     p.get_health(50)
+                if event.key == pygame.K_p:
+                    lose()
+                if event.key == pygame.K_g:
+                    win()
             
         p.move()
 
