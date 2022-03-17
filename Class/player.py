@@ -10,8 +10,8 @@ import pygame
 CONFIG = dotenv_values()
 
 class Player(pygame.sprite.Sprite):
+    
     def __init__(self, x, y, side, direction):
-
         pygame.sprite.Sprite.__init__(self)
         if side == 'right': 
             self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,18)]
@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         # SPRITE HITBOX        
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.hitbox = pygame.Rect(x + 90, y + 30, 40, 90)
 
         # ATTACK HITBOX
         self.attackHitbox = None
@@ -103,6 +104,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         # Update sprite
         self.rect.topleft = (self.x, self.y)
+        self.hitbox = pygame.Rect(self.x + 90, self.y + 30, 40, 90)
 
         # Update sprite image
         if self.current_sprite >= len(self.sprites):
@@ -131,6 +133,9 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(win, (255, 0, 0), (self.health_bar_x, self.health_bar_y, self.current_health / self.health_ratio, self.health_bar_height))
         pygame.draw.rect(win, (255, 255, 255), (self.health_bar_x, self.health_bar_y, self.health_bar_length, self.health_bar_height), self.health_bar_border)
 
+        # Test - Draw hitbox
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox)
+
     def attack(self):
         # Attack animation
         if self.counter_attack >= len(self.sprites_attack):
@@ -143,7 +148,10 @@ class Player(pygame.sprite.Sprite):
     def drawAttackHitbox(self, win):
         # Attack hitbox
         hitbox_x = (self.x + int(CONFIG.get('HITBOX_X_RIGHT'))) if self.direction == 'right' else (self.x - int(CONFIG.get('HITBOX_X_LEFT')))
-        self.attackHitbox = pygame.draw.rect(win, (255, 0, 0), (hitbox_x, self.y - int(CONFIG.get('HITBOX_Y')), int(CONFIG.get('HITBOX_WIDTH')), int(CONFIG.get('HITBOX_HEIGHT'))))
+        self.attackHitbox = pygame.Rect(hitbox_x, self.y - int(CONFIG.get('HITBOX_Y')), int(CONFIG.get('HITBOX_WIDTH')), int(CONFIG.get('HITBOX_HEIGHT')))
+
+        # TEST - Draw attack hitbox
+        # pygame.draw.rect(win, (255, 0, 0), self.attackHitbox)
 
     def drawHurtAnimation(self):
         # Hurt animation

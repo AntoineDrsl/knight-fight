@@ -3,6 +3,7 @@ from dotenv import dotenv_values
 from _thread import *
 from functions import *
 import json
+from random import randrange
 
 # Load .env
 CONFIG = dotenv_values()
@@ -46,9 +47,16 @@ ATTACKING = [
     False
 ]
 
+HEARTH_X = randrange(int(CONFIG.get('WINDOW_WIDTH')))
+HEARTH_Y = -10
+HEARTH = str(HEARTH_X) + ',' + str(HEARTH_Y)
+
 # Client listening
 def threaded_client(conn, player):
     global CURRENT_PLAYER
+    global HEARTH_X
+    global HEARTH_Y
+    global HEARTH
 
     # Connection info
     conn.send(json.dumps({
@@ -56,7 +64,8 @@ def threaded_client(conn, player):
         'side': SIDE[player],
         'life': LIFE[player],
         'direction': DIRECTION[player],
-        'attacking': ATTACKING[player]
+        'attacking': ATTACKING[player],
+        'hearth': HEARTH
     }).encode())
 
     reply = {}
@@ -70,9 +79,19 @@ def threaded_client(conn, player):
                 LIFE[player] = data['health']
                 DIRECTION[player] = data['direction']
                 ATTACKING[player]= data['attacking']
+                if data['hearth']:
+                    # If hearth, move it
+                    if(HEARTH_Y <= int(CONFIG.get('GROUND_Y'))):
+                        HEARTH_Y += 1
+                    HEARTH = str(HEARTH_X) + ',' + str(HEARTH_Y)
+                else:
+                    # Else, create new
+                    HEARTH_X = randrange(int(CONFIG.get('WINDOW_WIDTH')))
+                    HEARTH_Y = -10
             
             # Prepare response
             reply['side'] = SIDE[player]
+            reply['hearth'] = HEARTH
             if player == 1:
                 reply['position'] = POS[0]
                 reply['health'] = LIFE[0]
