@@ -2,6 +2,7 @@ import pygame
 from Class.network import Network
 from Class.player import Player
 from Class.background import Background
+from Class.hearth import Hearth
 from Class.button import Button
 from dotenv import dotenv_values
 from functions import *
@@ -23,7 +24,6 @@ BG = Background('./assets/background/boat.png', [0, 0])
 pygame.display.set_caption("Client")
 FONT = pygame.font.SysFont(None, 25)
 CLOCK = pygame.time.Clock()
-
 
 def pause() :
     paused = True
@@ -53,8 +53,6 @@ def pause() :
         pygame.display.update()
         CLOCK.tick(5)
 
-
-
 def text_objects(text, color) :
     textSurface = FONT.render(text, True, color)
     return textSurface, textSurface.get_rect()
@@ -80,7 +78,7 @@ def redrawWindow(win, player, player2):
 # Launch loop game
 def main():
     run = True
-    # Current player
+    # Current player data
     n = Network()
     startPos = read_pos(n.getPos())
     startSide = n.getSide()
@@ -89,15 +87,25 @@ def main():
     opponentDirection = 'right' if startDirection == 'left' else 'left'
     # Create current player
     p = Player(startPos[0], startPos[1], startSide, startDirection)
-    # Opponent
+    # Create opponent
     p2 = Player(int(CONFIG.get('P2_DEFAULT_X')), int(CONFIG.get('P2_DEFAULT_Y')), opponentSide, opponentDirection)
+    # Hearth
+    hearth = False
+    hearthCooldown = 0
 
-    # ADD SPRITE TO THE LIST
+    # Add sprites to the list
     ALL_SPRITES.add([p, p2])
 
     while run:
         # Send current user info and get opponent ones
-        data = n.send({ 'position': make_pos((p.x, p.y)), 'health': p.current_health, 'direction': p.direction, 'attacking': p.attacking })
+        data = n.send({ 
+            'position': make_pos((p.x, p.y)), 
+            'health': p.current_health, 
+            'direction': p.direction, 
+            'attacking': p.attacking, 
+            'hearth': make_pos((hearth.x, hearth.y)) if hearth else False
+        })
+
         # Update opponent
         p2Pos = read_pos(data['position'])
         if(p2.x != p2Pos[0] or p2.y != p2Pos[1]):
@@ -106,7 +114,29 @@ def main():
         p2.y = p2Pos[1]
         p2.current_health = int(data['health'])
         p2.direction = data['direction']
-        
+
+        # Get hearth position from server
+        hearthPos = read_pos(data['hearth'])
+        if hearth:
+            hearth.setPosition(hearthPos[0], hearthPos[1])
+        else:
+            hearth = Hearth(hearthPos[0], hearthPos[1])
+
+        # Check hearth collision
+        if hearthCooldown == 0 and hearth.rect.colliderect(p.rect):
+            p.get_health(50)
+            ALL_SPRITES.remove(hearth)
+            hearth = False
+            hearthCooldown = int(CONFIG.get('HEARTH_COOLDOWN'))
+
+        if hearthCooldown > 0:
+            hearthCooldown -= 1
+
+        # Add hearth sprite
+        if hearth:
+            ALL_SPRITES.add([hearth])
+
+        # Update all sprites
         ALL_SPRITES.update()
 
         for event in pygame.event.get():

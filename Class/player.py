@@ -10,8 +10,8 @@ import pygame
 CONFIG = dotenv_values()
 
 class Player(pygame.sprite.Sprite):
+    
     def __init__(self, x, y, side, direction):
-
         pygame.sprite.Sprite.__init__(self)
         if side == 'right': 
             self.sprites = [pygame.image.load(os.path.join('assets/characters/current/movement', str(x) + '.png')) for x in range(1,18)]
