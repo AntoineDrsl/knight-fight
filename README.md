@@ -38,7 +38,9 @@ It should have launch the game, if not please check your IP address and/or the P
 
 Finally launch in a third terminal for the second player if you play in local
 
-Or in the terminal of the second laptop 
+Or in the terminal of the second laptop but in that case the second laptop must :
+* Be connected at the same Internet connection
+* Have the same IP Address and Port in the `.env` file
 ```bash
 python3 client.py
 ```
